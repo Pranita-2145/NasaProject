@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Junior Explorer - Terra Tales</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Trebuchet MS', cursive;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Hero Animation Section */
+        .hero-animation {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(180deg, #0a0e27 0%, #1a1a2e 50%, #16213e 100%);
+        }
+
+        .hero-text {
+            position: absolute;
+            top: 10%;
+            text-align: center;
+            z-index: 10;
+            animation: fadeInDown 2s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glowing-text {
+            font-size: 6em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.8),
+                0 0 40px rgba(59, 130, 246, 0.6),
+                0 0 60px rgba(59, 130, 246, 0.4);
+            letter-spacing: 0.2em;
+            margin-bottom: 10px;
+            animation: textPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes textPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .subtitle {
+            font-size: 1.5em;
+            color: #60a5fa;
+            text-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+        }
+
+        .space-scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .earth-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            animation: floatEarth 6s ease-in-out infinite;
+        }
+
+        @keyframes floatEarth {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .earth {
+            font-size: 20em;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 0 50px rgba(59, 130, 246, 0.6));
+            animation: earthRotate 20s linear infinite;
+        }
+
+        @keyframes earthRotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Orbit path */
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 600px;
+            border: 2px dashed rgba(96, 165, 250, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: orbitFade 2s ease-in-out infinite;
+        }
+
+        @keyframes orbitFade {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .satellite {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120px;
+            height: 120px;
+            animation: satelliteOrbit 12s linear infinite;
+            transform-origin: 0 0;
+        }
+
+        @keyframes satelliteOrbit {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg) translateX(300px) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg) translateX(300px) rotate(-360deg);
+            }
+        }
+
+        .satellite-body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            transform: scale(0.8);
+        }
+
+        .solar-panel {
+            width: 35px;
+            height: 70px;
+            background: linear-gradient(90deg, 
+                #1e40af 0%, 
+                #3b82f6 20%, 
+                #60a5fa 40%, 
+                #3b82f6 60%, 
+                #1e40af 100%);
+            border: 2px solid #fbbf24;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solar-panel::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                transparent 70%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .main-body {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #f59e0b 0%, #dc2626 100%);
+            border: 3px solid #78350f;
+            border-radius: 5px;
+            position: relative;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.7);
+        }
+
+        .main-body::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 15px;
+            height: 15px;
+            background: #3b82f6;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #60a5fa;
+            font-size: 1.2em;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-15px); }
+        }
+
+        .scroll-indicator::after {
+            content: '⬇️';
+            display: block;
+            font-size: 2em;
+            margin-top: 10px;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: slideDown 1s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            color: #fff;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header p {
+            font-size: 1.3em;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+        .card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .card-icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: wiggle 2s infinite;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .card:hover .card-icon {
+            animation: spin 0.8s ease-in-out;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .card h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .card p {
+            color: #555;
+            font-size: 1.1em;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 3em;
+            font-weight: bold;
+            color: rgba(102, 126, 234, 0.2);
+        }
+
+        .fun-fact {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .fun-fact h3 {
+            font-size: 2em;
+            color: #6b21a8;
+            margin-bottom: 15px;
+        }
+
+        .fun-fact p {
+            font-size: 1.3em;
+            color: #4c1d95;
+        }
+
+        .floating-trees {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .tree {
+            position: absolute;
+            font-size: 3em;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        .tree:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .tree:nth-child(2) { left: 30%; animation-delay: 1s; }
+        .tree:nth-child(3) { left: 50%; animation-delay: 2s; }
+        .tree:nth-child(4) { left: 70%; animation-delay: 3s; }
+        .tree:nth-child(5) { left: 90%; animation-delay: 4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-30px); }
+        }
+
+        .quiz-box {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: slideInLeft 1s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .quiz-box h3 {
+            font-size: 2.2em;
+            color: #fff;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .quiz-container {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .quiz-container.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .question-box {
+            display: none;
+        }
+
+        .question-box.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .question-text {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            font-size: 1em;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+            color: #333;
+            border: 3px solid #c7d2fe;
+            padding: 15px 20px;
+            font-size: 1.2em;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Comic Sans MS', cursive;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            transform: translateX(10px);
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, #86efac 0%, #4ade80 100%);
+            border-color: #22c55e;
+            animation: correctAnswer 0.5s ease-out;
+        }
+
+        .option-btn.wrong {
+            background: linear-gradient(135deg, #fca5a5 0%, #f87171 100%);
+            border-color: #ef4444;
+            animation: shake 0.5s ease-out;
+        }
+
+        @keyframes correctAnswer {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .quiz-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Comic Sans MS', cursive;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            margin-top: 20px;
+        }
+
+        .quiz-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .quiz-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quiz-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .score-box {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .score-box.active {
+            display: block;
+            animation: bounceIn 0.8s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .score-display {
+            font-size: 4em;
+            color: #667eea;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .score-message {
+            font-size: 1.8em;
+            color: #333;
+            margin: 20px 0;
+        }
+
+        .score-emoji {
+            font-size: 5em;
+            margin: 20px 0;
+            animation: rotate 2s infinite;
+        }
+
+        @keyframes rotate {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e7ff;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="starsContainer"></div>
+    
+    <div class="floating-trees">
+        <div class="tree">🌲</div>
+        <div class="tree">🌳</div>
+        <div class="tree">🌲</div>
+        <div class="tree">🌳</div>
+        <div class="tree">🌲</div>
+    </div>
+
+    <!-- Hero Animation Section -->
+    <div class="hero-animation" id="heroSection">
+        <div class="hero-text">
+            <h1 class="glowing-text">TERRA</h1>
+            <p class="subtitle">Watching Our Planet for 25 Years</p>
+        </div>
+        
+        <div class="space-scene">
+            <div class="orbit"></div>
+            <div class="earth-container">
+                <div class="earth">🌍</div>
+            </div>
+            <div class="satellite">
+                <div class="satellite-body">
+                    <div class="solar-panel left"></div>
+                    <div class="main-body"></div>
+                    <div class="solar-panel right"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">Scroll to Explore</div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🌳 Junior Explorer Zone! 🚀</h1>
+            <p>Learn About Our Amazing Forests!</p>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-number">01</div>
+                <div class="card-icon">🌍</div>
+                <h2>What is Deforestation?</h2>
+                <p>Deforestation means cutting down lots and lots of trees from forests. Imagine your favorite park, but all the trees are gone! That's what's happening to big forests around the world.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-number">02</div>
+                <div class="card-icon">🐯</div>
+                <h2>Animal Homes</h2>
+                <p>Forests are home to millions of animals like tigers, elephants, birds, and butterflies! When trees are cut down, these animals lose their homes and have nowhere to live.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-number">03</div>
+                <div class="card-icon">💨</div>
+                <h2>Trees Give Us Air!</h2>
+                <p>Trees are like magical air machines! They breathe in bad air (CO₂) and give us fresh, clean air (oxygen) to breathe. Without trees, we'd have dirty air!</p>
+            </div>
+
+            <div class="card">
+                <div class="card-number">04</div>
+                <div class="card-icon">☔</div>
+                <h2>Trees Make Rain</h2>
+                <p>Did you know trees help make rain? They release water into the sky which forms clouds. Fewer trees means less rain and more droughts!</p>
+            </div>
+
+            <div class="card">
+                <div class="card-number">05</div>
+                <div class="card-icon">🌡️</div>
+                <h2>Trees Keep Us Cool</h2>
+                <p>Trees are nature's air conditioners! They provide shade and cool down the air. Without them, our planet gets hotter and hotter, like a giant oven!</p>
+            </div>
+
+            <div class="card">
+                <div class="card-number">06</div>
+                <div class="card-icon">🌱</div>
+                <h2>We Can Help!</h2>
+                <p>YOU can be a forest hero! Plant trees, use less paper, recycle, and tell others about saving forests. Every little action counts!</p>
+            </div>
+        </div>
+
+        <div class="fun-fact">
+            <h3>🎉 Amazing Fact! 🎉</h3>
+            <p>One large tree can provide a day's supply of oxygen for up to four people! That's like having your own superhero breathing buddy! 🦸‍♂️</p>
+        </div>
+
+        <div class="quiz-box">
+            <h3>🎮 Test Your Forest Knowledge!</h3>
+            <button class="quiz-btn" onclick="startQuiz()">Start Quiz!</button>
+            
+            <div class="quiz-container" id="quizContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                
+                <div class="question-box active" id="question1">
+                    <div class="question-number">Question 1 of 5</div>
+                    <div class="question-text">🌳 What does deforestation mean?</div>
+                    <div class="options">
+                        <button class="option-btn" onclick="checkAnswer(this, false)">A) Planting more trees</button>
+                        <button class="option-btn" onclick="checkAnswer(this, true)">B) Cutting down lots of trees</button>
+                        <button class="option-btn" onclick="checkAnswer(this, false)">C) Watering trees</button>
+                        <button class="option-btn" onclick="checkAnswer(this, false)">D) Climbing trees</button>
+                    </div>
+                    <button class="quiz-btn" onclick="nextQuestion()" id="nextBtn1" disabled>Next Question</button>
+                </div>
+
+                <div class="question-box" id="question2">
+                    <div class="question-number">Question 2 of 5</div>
+                    <div class="question-text">🐯 What happens to animals when forests are cut down?</div>
+                    <div class="options">
+                        <button class="option-btn" onclick="checkAnswer(this, false)">A) They build new homes</button>
+                        <button class="option-btn" onclick="checkAnswer(this, true)">B) They lose their homes</button>
+                        <button class="option-btn" onclick="checkAnswer(this, false)">C) They become happier</button>
+                        <button class="option-btn" onclick="checkAnswer(this, false)">D) Nothing happens</button>
+                    </div>
+                    <button class="quiz-btn" onclick="nextQuestion()" id="nextBtn2" disabled>Next Question</button>
+                </div>
+
+                <div class="question-box" id="question3">
+                    <div class="question-number">Question 3 of 5</div>
+                    <div class="question-text">💨 What do trees give us to breathe?</div>
+                    <div class="options">
+                        <button class="option-btn" onclick="checkAnswer(this, false)">A) Carbon Dioxide</button>
+                        <button class="option-btn" onclick="checkAnswer(this, true)">B) Oxygen</button>
+                        <button class="option-btn" onclick="checkAnswer(this, false)">C) Nitrogen</button>
+                        <button class="option-btn" onclick="checkAnswer(this, false)">D) Hydrogen</button>
+                    </div>
+                    <button class="quiz-btn" onclick="nextQuestion()" id="nextBtn3" disabled>Next Question</button>
+                </div>
+
+                <div class="question-box" id="question4">
+                    <div class="question-number">Question 4 of 5</div>
+                    <div class="question-text">🌡️ What happens to Earth's temperature when we cut too many trees?</div>
+                    <div class="options">
+                        <button class="option-btn" onclick="checkAnswer(this, false)">A) It gets colder</button>
+                        <button class="option-btn" onclick="checkAnswer(this, true)">B) It gets hotter</button>
+                        <button class="option-btn" onclick="checkAnswer(this, false)">C) It stays the same</button>
+                        <button class="option-btn" onclick="checkAnswer(this, false)">D) It becomes icy</button>
+                    </div>
+                    <button class="quiz-btn" onclick="nextQuestion()" id="nextBtn4" disabled>Next Question</button>
+                </div>
+
+                <div class="question-box" id="question5">
+                    <div class="question-number">Question 5 of 5</div>
+                    <div class="question-text">🌱 How can YOU help save forests?</div>
+                    <div class="options">
+                        <button class="option-btn" onclick="checkAnswer(this, false)">A) Use more paper</button>
+                        <button class="option-btn" onclick="checkAnswer(this, false)">B) Cut down trees</button>
+                        <button class="option-btn" onclick="checkAnswer(this, true)">C) Plant trees and recycle</button>
+                        <button class="option-btn" onclick="checkAnswer(this, false)">D) Do nothing</button>
+                    </div>
+                    <button class="quiz-btn" onclick="showScore()" id="nextBtn5" disabled>See My Score!</button>
+                </div>
+
+                <div class="score-box" id="scoreBox">
+                    <div class="score-emoji" id="scoreEmoji">🌟</div>
+                    <div class="score-display" id="scoreDisplay">0/5</div>
+                    <div class="score-message" id="scoreMessage">Great job!</div>
+                    <button class="quiz-btn" onclick="restartQuiz()">Take Quiz Again!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create animated stars
+        const starsContainer = document.getElementById('starsContainer');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // Add click effects to cards
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.background = 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)';
+                setTimeout(() => {
+                    this.style.background = 'linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%)';
+                }, 500);
+            });
+        });
+
+        // Quiz functionality
+        let currentQuestion = 1;
+        let score = 0;
+        let answered = false;
+
+        function startQuiz() {
+            document.getElementById('quizContainer').classList.add('active');
+            document.querySelector('.quiz-box button:first-of-type').style.display = 'none';
+            currentQuestion = 1;
+            score = 0;
+            answered = false;
+            updateProgress();
+        }
+
+        function checkAnswer(button, isCorrect) {
+            if (answered) return;
+            answered = true;
+
+            const options = button.parentElement.querySelectorAll('.option-btn');
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+
+            if (isCorrect) {
+                button.classList.add('correct');
+                score++;
+                playSound('correct');
+            } else {
+                button.classList.add('wrong');
+                // Show the correct answer
+                options.forEach(opt => {
+                    if (opt.onclick.toString().includes('true')) {
+                        opt.classList.add('correct');
+                    }
+                });
+                playSound('wrong');
+            }
+
+            document.getElementById('nextBtn' + currentQuestion).disabled = false;
+        }
+
+        function playSound(type) {
+            // Visual feedback instead of sound
+            if (type === 'correct') {
+                console.log('🎉 Correct!');
+            } else {
+                console.log('😅 Try again!');
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById('question' + currentQuestion).classList.remove('active');
+            currentQuestion++;
+            document.getElementById('question' + currentQuestion).classList.add('active');
+            answered = false;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion - 1) / 5) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showScore() {
+            document.getElementById('question5').classList.remove('active');
+            document.getElementById('scoreBox').classList.add('active');
+            document.getElementById('scoreDisplay').textContent = score + '/5';
+            document.getElementById('progressFill').style.width = '100%';
+
+            let emoji, message;
+            if (score === 5) {
+                emoji = '🏆';
+                message = 'PERFECT! You\'re a Forest Guardian Champion! 🌳';
+            } else if (score >= 4) {
+                emoji = '⭐';
+                message = 'Awesome! You\'re almost a Forest Expert! 🌲';
+            } else if (score >= 3) {
+                emoji = '👍';
+                message = 'Good job! Keep learning about forests! 🌿';
+            } else if (score >= 2) {
+                emoji = '💚';
+                message = 'Nice try! You\'re getting there! 🌱';
+            } else {
+                emoji = '🌱';
+                message = 'Keep exploring! Every tree counts! 🌳';
+            }
+
+            document.getElementById('scoreEmoji').textContent = emoji;
+            document.getElementById('scoreMessage').textContent = message;
+        }
+
+        function restartQuiz() {
+            // Reset all questions
+            for (let i = 1; i <= 5; i++) {
+                const question = document.getElementById('question' + i);
+                question.classList.remove('active');
+                const options = question.querySelectorAll('.option-btn');
+                options.forEach(opt => {
+                    opt.classList.remove('correct', 'wrong');
+                    opt.style.pointerEvents = 'auto';
+                });
+                document.getElementById('nextBtn' + i).disabled = true;
+            }
+
+            document.getElementById('scoreBox').classList.remove('active');
+            document.getElementById('question1').classList.add('active');
+            currentQuestion = 1;
+            score = 0;
+            answered = false;
+            updateProgress();
+        }
+    </script>
+</body>
+</html>

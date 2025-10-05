@@ -3,7 +3,7 @@
 
 ### *A NASA Space Apps 2025 Project*
 
-**By Pranita**
+**By Team TechPandavas**
 
 ---
 

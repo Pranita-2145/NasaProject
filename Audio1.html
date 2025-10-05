@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audiobook Section</title>
+<style>
+/* Global Styles - Poppins for a modern look */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #0D1B2A;
+    /* Add padding to the bottom to make space for the fixed global player */
+    padding-bottom: 100px; 
+}
+.audiobook-section {
+    background: #0D1B2A;
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+}
+.audiobook-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #00ADB5;
+}
+.audiobook-section p {
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin: 0 auto 50px;
+    color: #A9D9D9;
+}
+.audiobook-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.audiobook-card {
+    background: #1B263B;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0px 8px 20px rgba(0,0,0,0.5);
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer; 
+    position: relative; 
+    z-index: 1; 
+    overflow: hidden; 
+}
+.audiobook-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 12px 25px rgba(0,0,0,0.7);
+}
+
+/* Card Overlay and Icon Styling */
+.card-play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); 
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0; 
+    transition: opacity 0.3s ease;
+    z-index: 10; 
+    pointer-events: none; 
+}
+
+/* Show overlay only on hover, unless audio is playing */
+.audiobook-card:hover .card-play-overlay,
+.audiobook-card.is-playing .card-play-overlay {
+    opacity: 1;
+}
+
+.card-play-icon {
+    font-size: 3rem; 
+    color: #FFF; 
+    background: linear-gradient(135deg, #ff6a00, #ee0979); 
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 15px rgba(255, 106, 0, 0.7);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.audiobook-card:hover .card-play-icon {
+    transform: scale(1.1); 
+}
+
+/* Specific adjustments for Play vs Pause icon centering */
+.card-play-icon .play {
+    margin-left: 5px; 
+}
+.card-play-icon .pause {
+    font-size: 2.5rem; 
+    line-height: 1;
+}
+
+
+/* Existing Styles */
+.audiobook-card h3 {
+    margin: 0 0 10px;
+    color: #39FF14;
+}
+.audiobook-card > p {
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    color: #A9D9D9;
+}
+
+/* Updated button style for 'Read Full Article' */
+.read-btn {
+    display: block; 
+    background: transparent;
+    color: #00ADB5;
+    border: 2px solid #00ADB5;
+    padding: 10px 20px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.3s ease;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 15px; 
+    z-index: 100; 
+    position: relative;
+}
+.read-btn:hover {
+    background: #00ADB5;
+    color: #1B263B;
+    transform: none;
+}
+
+
+/* Modal Styling (unchanged) */
+#audiobookModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    overflow-y: auto;
+}
+#audiobookModal .modal-content {
+    max-width: 800px;
+    margin: 80px auto;
+    background: #1B263B;
+    border-radius: 15px;
+    padding: 30px;
+    position: relative;
+}
+#audiobookModal h3 {
+    color: #39FF14;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+#audiobookModal p {
+    color: #A9D9D9;
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+#audiobookModal button.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: #39FF14;
+    cursor: pointer;
+}
+
+/* NEW: Global Audio Control Bar Styling */
+#globalControls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 700px;
+    background: #283952; /* Darker blue background */
+    border-radius: 40px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 999;
+}
+
+#globalControls.is-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.control-button {
+    background: #00ADB5;
+    color: #0D1B2A;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+.control-button:hover {
+    background: #39FF14;
+}
+
+#globalTitle {
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+    text-align: left;
+}
+
+#speedSelector {
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: #0D1B2A;
+    color: #A9D9D9;
+    border: 1px solid #A9D9D9;
+    font-size: 0.9rem;
+    cursor: pointer;
+    appearance: none; /* Remove default dropdown arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23A9D9D9'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 12px;
+}
+</style>
+</head>
+<body>
+
+<section class="audiobook-section">
+<h2>🎧 Audiobook Collection</h2>
+<p>Click any card to listen to an AI-narrated summary on global challenges, sustainability, and inspiring ideas for a better tomorrow.</p>
+
+<div class="audiobook-container">
+
+<!-- CARD 1: Clickable Card -->
+<div id="card-1" class="audiobook-card" onclick="toggleVoice(1)">
+    <div class="card-play-overlay"><span class="card-play-icon"><span id="icon-1" class="play">▶</span></span></div>
+    <h3>🌍 Climate Change: Global Impact</h3>
+    <p>Learn how climate change is reshaping our planet and what actions can help us protect it.</p>
+    <button class="read-btn" onclick="event.stopPropagation(); openAudioModal(1);">Read Full Article</button>
+</div>
+
+<!-- CARD 2: Clickable Card -->
+<div id="card-2" class="audiobook-card" onclick="toggleVoice(2)">
+    <div class="card-play-overlay"><span class="card-play-icon"><span id="icon-2" class="play">▶</span></span></div>
+    <h3>🌱 Sustainable Living</h3>
+    <p>Discover practical tips to reduce waste, conserve energy, and adopt an eco-friendly lifestyle.</p>
+    <button class="read-btn" onclick="event.stopPropagation(); openAudioModal(2);">Read Full Article</button>
+</div>
+
+<!-- CARD 3: Clickable Card -->
+<div id="card-3" class="audiobook-card" onclick="toggleVoice(3)">
+    <div class="card-play-overlay"><span class="card-play-icon"><span id="icon-3" class="play">▶</span></span></div>
+    <h3>🏞 Protecting Ecosystems</h3>
+    <p>Explore the importance of biodiversity and how conservation efforts safeguard our future.</p>
+    <button class="read-btn" onclick="event.stopPropagation(); openAudioModal(3);">Read Full Article</button>
+</div>
+
+<!-- CARD 4: Clickable Card -->
+<div id="card-4" class="audiobook-card" onclick="toggleVoice(4)">
+    <div class="card-play-overlay"><span class="card-play-icon"><span id="icon-4" class="play">▶</span></span></div>
+    <h3>💡 Innovations for Tomorrow</h3>
+    <p>How technology and creativity are providing new solutions to global problems.</p>
+    <button class="read-btn" onclick="event.stopPropagation(); openAudioModal(4);">Read Full Article</button>
+</div>
+
+<!-- CARD 5: Clickable Card -->
+<div id="card-5" class="audiobook-card" onclick="toggleVoice(5)">
+    <div class="card-play-overlay"><span class="card-play-icon"><span id="icon-5" class="play">▶</span></span></div>
+    <h3>🤝 Community & Empowerment</h3>
+    <p>Listen to inspiring stories of resilience and how communities unite for change.</p>
+    <button class="read-btn" onclick="event.stopPropagation(); openAudioModal(5);">Read Full Article</button>
+</div>
+
+<!-- CARD 6: Clickable Card -->
+<div id="card-6" class="audiobook-card" onclick="toggleVoice(6)">
+    <div class="card-play-overlay"><span class="card-play-icon"><span id="icon-6" class="play">▶</span></span></div>
+    <h3>📚 Education for All</h3>
+    <p>The power of education in transforming lives and building a sustainable future.</p>
+    <button class="read-btn" onclick="event.stopPropagation(); openAudioModal(6);">Read Full Article</button>
+</div>
+
+</div>
+</section>
+
+<!-- Modal -->
+<div id="audiobookModal">
+<div class="modal-content">
+<button class="close-btn" onclick="closeAudioModal()">&times;</button>
+<h3 id="modalAudioTitle"></h3>
+<p id="modalAudioContent"></p>
+</div>
+</div>
+
+<!-- NEW: Global Audio Control Bar -->
+<div id="globalControls">
+    <div class="control-group">
+        <button id="globalPlayPauseBtn" class="control-button" onclick="globalPlayPause()">❚❚</button>
+        <button class="control-button" onclick="stopVoice()">■</button>
+    </div>
+    <span id="globalTitle">No audio playing</span>
+    <select id="speedSelector" onchange="setVoiceRate(this.value)">
+        <option value="0.75">0.75x</option>
+        <option value="1" selected>1.0x</option>
+        <option value="1.25">1.25x</option>
+        <option value="1.5">1.5x</option>
+        <option value="2">2.0x</option>
+    </select>
+</div>
+
+<script>
+const audiobookArticles = {
+1: {title:"Climate Change: Global Impact", content:"Climate change is accelerating due to greenhouse gas emissions, leading to rising sea levels, unpredictable weather patterns, and biodiversity loss. Urgent actions include reducing emissions, shifting to renewable energy, and global collaboration."},
+2: {title:"Sustainable Living", content:"Sustainable living focuses on reducing our ecological footprint. This includes minimizing waste, saving water, using renewable energy, and choosing eco-friendly products. Small lifestyle changes can create a big collective impact."},
+3: {title:"Protecting Ecosystems", content:"Ecosystems provide us with clean air, water, and resources. Conservation efforts like afforestation, marine reserves, and protecting endangered species help balance biodiversity and support life on Earth."},
+4: {title:"Innovations for Tomorrow", content:"From AI to green technologies, innovations are shaping the future. Solar-powered homes, electric vehicles, and sustainable agriculture are paving the way for eco-friendly development."},
+5: {title:"Community & Empowerment", content:"Communities across the globe are driving social and environmental change. Grassroots movements empower people to take action, fostering unity and resilience in the face of global challenges."},
+6: {title:"Education for All", content:"Education is the foundation for sustainable development. It empowers individuals, reduces inequalities, and promotes awareness about pressing issues like climate change and social justice."}
+};
+
+let currentUtterance = null;
+let currentArticleId = null;
+let currentRate = 1.0;
+
+// --- DOM Elements ---
+const globalControls = document.getElementById('globalControls');
+const globalTitle = document.getElementById('globalTitle');
+const globalPlayPauseBtn = document.getElementById('globalPlayPauseBtn');
+
+// --- Helper Functions for UI and State Management ---
+
+/**
+ * Updates the Play/Pause icon state on the corresponding card and the global control bar.
+ */
+function updateUI(id, isSpeaking) {
+    // 1. Reset all card icons
+    document.querySelectorAll('.audiobook-card').forEach(el => el.classList.remove('is-playing'));
+    document.querySelectorAll('.card-play-icon').forEach(iconContainer => {
+        iconContainer.innerHTML = '<span class="play">▶</span>';
+    });
+    
+    // 2. Update the specific card
+    const cardEl = document.getElementById(card-${id});
+    const cardIconContainer = cardEl ? cardEl.querySelector('.card-play-icon') : null;
+
+    if (cardEl && cardIconContainer) {
+        if (isSpeaking) {
+            // Show pause icon and add playing class
+            cardIconContainer.innerHTML = '<span class="pause">❚❚</span>'; // Pause icon
+            cardEl.classList.add('is-playing');
+            
+            // Update global controls to PLAYING state
+            globalControls.classList.add('is-active');
+            globalTitle.textContent = audiobookArticles[id].title;
+            globalPlayPauseBtn.textContent = '❚❚';
+            // Update the global play/pause function to target the current article ID
+            globalPlayPauseBtn.onclick = () => globalPlayPause(); 
+        } else {
+            // Show play icon
+            cardIconContainer.innerHTML = '<span class="play">▶</span>'; 
+            cardEl.classList.remove('is-playing');
+            
+            // Update global controls to PAUSED state (if speech is only paused, not stopped)
+            if (speechSynthesis.paused) {
+                globalPlayPauseBtn.textContent = '▶';
+            } else {
+                 // Audio has completely ended/stopped
+                globalControls.classList.remove('is-active');
+                globalTitle.textContent = 'No audio playing';
+            }
+        }
+    } else {
+        // If triggered by a stop/end event not linked to a specific card
+        if (!isSpeaking && !speechSynthesis.paused) {
+            globalControls.classList.remove('is-active');
+            globalTitle.textContent = 'No audio playing';
+        }
+    }
+}
+
+// Finds the article ID corresponding to the currently speaking utterance content
+function findIdFromUtterance(utterance) {
+    if (!utterance) return null;
+    for (const [id, article] of Object.entries(audiobookArticles)) {
+        if (article.content === utterance.text) {
+            return parseInt(id);
+        }
+    }
+    return null;
+}
+
+// --- Main Audio Logic (Speech Synthesis) ---
+
+/**
+ * Handles playing/pausing based on card click.
+ * @param {number} id - The ID of the article.
+ */
+function toggleVoice(id){
+    const text = audiobookArticles[id].content;
+
+    // 1. If currently speaking the SAME article, handle pause/resume
+    if(currentUtterance && (speechSynthesis.speaking || speechSynthesis.paused) && currentArticleId === id){
+        if(speechSynthesis.paused){
+            speechSynthesis.resume();
+            updateUI(id, true);
+        } else {
+            speechSynthesis.pause();
+            updateUI(id, false);
+        }
+        return;
+    }
+
+    // 2. Stop any currently speaking audio (different article)
+    if(speechSynthesis.speaking || speechSynthesis.pending) {
+        stopVoice(); // Use the dedicated stop function
+    }
+    
+    // 3. Start new speech
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = currentRate; // Apply current speed setting
+    utterance.pitch = 1;
+    
+    // Set event handlers for state changes
+    utterance.onstart = () => {
+        currentUtterance = utterance;
+        currentArticleId = id;
+        updateUI(id, true);
+    };
+    
+    utterance.onend = () => {
+        // Speech ended normally
+        currentUtterance = null;
+        currentArticleId = null;
+        updateUI(id, false);
+    };
+    
+    // Important: onend won't fire if canceled, so we use the UI updates from the stopVoice function.
+
+    currentUtterance = utterance;
+    currentArticleId = id; // Set ID immediately before speaking
+    speechSynthesis.speak(utterance);
+}
+
+/**
+ * Stops all currently speaking audio and resets the state.
+ */
+function stopVoice() {
+    if (speechSynthesis.speaking || speechSynthesis.pending || speechSynthesis.paused) {
+        speechSynthesis.cancel();
+        
+        // Reset state and UI
+        const oldId = currentArticleId;
+        currentUtterance = null;
+        currentArticleId = null;
+        
+        // If an ID was set, reset its icon
+        if (oldId) {
+            updateUI(oldId, false);
+        }
+        
+        globalControls.classList.remove('is-active');
+        globalTitle.textContent = 'No audio playing';
+    }
+}
+
+/**
+ * Global play/pause button handler.
+ */
+function globalPlayPause() {
+    if (currentArticleId === null) return; // Cannot play/pause if nothing is active
+
+    if (speechSynthesis.paused) {
+        speechSynthesis.resume();
+        updateUI(currentArticleId, true);
+    } else if (speechSynthesis.speaking) {
+        speechSynthesis.pause();
+        updateUI(currentArticleId, false);
+    }
+}
+
+/**
+ * Changes the playback rate/speed.
+ * @param {string} rate - The new rate as a string (e.g., "1.5").
+ */
+function setVoiceRate(rate) {
+    currentRate = parseFloat(rate);
+    
+    // If audio is currently playing, we must stop and restart it with the new rate.
+    if (currentUtterance && (speechSynthesis.speaking || speechSynthesis.paused)) {
+        const idToRestart = currentArticleId;
+        stopVoice();
+        // Use a slight delay to ensure the cancel operation completes before restarting
+        setTimeout(() => {
+            toggleVoice(idToRestart);
+        }, 100); 
+    }
+}
+
+
+// --- Event Listeners and Modal Functions (unchanged) ---
+
+document.addEventListener('keydown', (e) => {
+    // Space bar acts as global play/pause
+    if(e.key === " " && currentUtterance){
+        e.preventDefault(); // Prevent scrolling
+        globalPlayPause();
+    }
+});
+
+function openAudioModal(id){
+    // Stop audio when modal opens
+    if(speechSynthesis.speaking || speechSynthesis.pending || speechSynthesis.paused) {
+        stopVoice(); 
+    }
+    
+    // Display the modal as a flex container to center it
+    document.getElementById("audiobookModal").style.display = "flex"; 
+    document.getElementById("modalAudioTitle").innerText = audiobookArticles[id].title;
+    document.getElementById("modalAudioContent").innerText = audiobookArticles[id].content;
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+function closeAudioModal(){
+    document.getElementById("audiobookModal").style.display = "none";
+    document.body.style.overflow = 'auto'; // Restore background scrolling
+}
+
+// Fix for modal display type which was 'block' in CSS but should be 'flex' for centering
+window.addEventListener('load', () => {
+    // Ensure the modal is hidden on load but has the correct display type when shown
+    document.getElementById("audiobookModal").style.display = "none";
+});
+
+</script>
+</body>
+</html>
